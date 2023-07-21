@@ -15,7 +15,7 @@
   box-sizing: border-box;
 }
 body {
-  background-image: url("../../public/logo.svg");
+  background-image: url("/logo.svg");
   background-repeat: space;
   background-color: #424242;
   padding: 0;
