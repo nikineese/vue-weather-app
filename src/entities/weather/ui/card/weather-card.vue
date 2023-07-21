@@ -171,7 +171,7 @@ const handleSubmitMaxFavouriteModal = ($emit) => {
           </span>
           <span
             ><span v-t="'visibility'"></span>:
-            {{ (currentWeather.visibility / 1000).toFixed(1) }}km</span
+            {{ ((currentWeather?.visibility || 0) / 1000).toFixed(1) }}km</span
           >
         </div>
       </div>
@@ -184,7 +184,7 @@ const handleSubmitMaxFavouriteModal = ($emit) => {
     />
     <close-icon
       class="remove-card-btn"
-      v-if="!isFavouritesTab && cards?.length > 1"
+      v-if="!isFavouritesTab && cards && cards.length > 1"
       :size="30"
       color="#ff7b7b"
       @click="removeCardConfirmModalOpen = true"
@@ -221,8 +221,8 @@ const handleSubmitMaxFavouriteModal = ($emit) => {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  -moz-box-shadow: 0px 0px 68px -50px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 0px 68px -50px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0 0 68px -50px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 0 68px -50px rgba(0, 0, 0, 0.75);
 }
 .weather-card__tabs {
   display: flex;
