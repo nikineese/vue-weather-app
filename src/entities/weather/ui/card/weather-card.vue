@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { capitalize, computed, ref } from "vue";
+import { capitalize, computed, ref, toRefs } from "vue";
 import { i18n } from "@/shared/i18n";
 import {
   WEATHER_IMG_URL,
@@ -20,7 +20,7 @@ import { ToggleDayNight } from "../buttons";
 import { ChartLabelName } from "../../model";
 
 defineEmits(["addFavourite", "removeFavourite", "changeLastFavourite"]);
-const { id, city, cards, favourites } = defineProps<{
+const props = defineProps<{
   id: number;
   city: string;
   isFavouritesTab?: boolean;
@@ -28,8 +28,10 @@ const { id, city, cards, favourites } = defineProps<{
   favourites: CardIdCity[];
 }>();
 
+const { id, city, cards, favourites } = toRefs(props);
+
 const { weathers, refetch } = useGetWeatherByCityCountry(
-  { city },
+  { city: city.value },
   { lang: i18n.global.locale.value },
 );
 
@@ -37,7 +39,7 @@ const { currentWeather, forecastWeather, forecastList } = weathers;
 
 const { cities } = useGetCitiesList();
 
-const currentCity = ref(city);
+const currentCity = ref(city.value);
 const chartLabel = ref<ChartLabel>("hours");
 
 const loadCityErrorModalOpen = ref<boolean>(false);
@@ -47,11 +49,11 @@ const maxFavouritesModalOpen = ref<boolean>(false);
 const loadCityError = ref<number>();
 
 const isFavourite = computed(() =>
-  favourites.some((c) => c.city === currentCity.value),
+  favourites.value.some((c) => c.city === currentCity.value),
 );
 
 const handleChooseCurrentCity = async ($emit, city: string) => {
-  if (!cards) return;
+  if (!cards?.value) return;
   currentCity.value = city;
   const prevValuesStorage: [
     WeatherResponse | undefined,
@@ -71,9 +73,9 @@ const handleChooseCurrentCity = async ($emit, city: string) => {
     return;
   }
 
-  const cardIndex = cards.findIndex((card) => card.id === id);
-  cards.splice(cardIndex, 1);
-  cards.splice(cardIndex, 0, { id, city: currentCity.value });
+  const cardIndex = cards.value.findIndex((card) => card.id === id.value);
+  cards.value.splice(cardIndex, 1);
+  cards.value.splice(cardIndex, 0, { id: id.value, city: currentCity.value });
 };
 
 const handleChangeChartLabel = (label: ChartLabel) => {
@@ -81,17 +83,17 @@ const handleChangeChartLabel = (label: ChartLabel) => {
 };
 
 const handleRemoveCard = () => {
-  if (!cards) return;
-  if (cards.length > 1) {
-    cards.splice(
-      cards.findIndex((c) => c.id === id),
+  if (!cards?.value) return;
+  if (cards.value.length > 1) {
+    cards.value.splice(
+      cards.value.findIndex((c) => c.id === id.value),
       1,
     );
   }
 };
 
 const handleActionFavourite = ($emit) => {
-  if (!isFavourite.value && favourites.length >= 5) {
+  if (!isFavourite.value && favourites.value.length >= 5) {
     maxFavouritesModalOpen.value = true;
     return;
   }

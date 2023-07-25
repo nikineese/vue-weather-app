@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, toRefs, watch } from "vue";
 import { debounce } from "ts-debounce";
 import Loader from "@/shared/ui/loader.vue";
 
-const { initialValue, cities } = defineProps<{
+const props = defineProps<{
   initialValue: string;
   cities: string[];
 }>();
 
+const { initialValue, cities } = toRefs(props);
+
 const searchLoading = ref(false);
 const isOptionsOpen = ref(false);
 
-const city = ref(initialValue);
+const city = ref(initialValue.value);
 const filteredCities = ref<string[]>([]);
 
 const chooseCity = ($emit, c) => {
@@ -25,7 +27,7 @@ const closeOptions = debounce(() => {
 }, 100);
 
 const filterCities = debounce(() => {
-  filteredCities.value = cities.filter((c) =>
+  filteredCities.value = cities.value.filter((c) =>
     c.toLowerCase().startsWith(city.value.toLowerCase()),
   );
   searchLoading.value = false;

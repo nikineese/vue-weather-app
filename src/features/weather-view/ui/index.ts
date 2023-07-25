@@ -1,2 +1,2 @@
-import Main from "./index.vue";
-export { Main };
+import MainPage from "./index.vue";
+export { MainPage };

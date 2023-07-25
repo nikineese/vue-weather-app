@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import { TabsSelector, Tab } from "@/entities/tabs";
 import type { CardIdCity } from "@/entities/weather";
 import type { GeoapifyResponse } from "@/shared/api";
@@ -7,9 +7,11 @@ import { Loader } from "@/shared/ui";
 import { AddCardBtn, WeatherCard, EmptyTab } from "@/entities/weather";
 import { useGetFavourites } from "@/shared/localStorage";
 
-const { geolocation } = defineProps<{
+const props = defineProps<{
   geolocation: GeoapifyResponse;
 }>();
+
+const { geolocation } = toRefs(props);
 
 const { favourites, addFavourite, removeFavourite, changeLastFavourite } =
   useGetFavourites();
@@ -23,14 +25,14 @@ const handleSelectTab = (tab: Tab) => {
 const handleAddCard = () => {
   cards.push({
     id: cards[cards.length - 1].id + 1,
-    city: geolocation.city.name || "New York",
+    city: geolocation.value.city.name || "New York",
   });
 };
 
 onMounted(async () => {
   cards.push({
     id: 0,
-    city: geolocation.city.name || "New York",
+    city: geolocation.value.city.name || "New York",
   });
 });
 </script>
@@ -76,7 +78,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-main {
+main-page {
   display: flex;
   flex-direction: column;
   gap: 10px;
