@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Chart from "chart.js/auto";
-import { computed, onMounted, ref, toRefs, watch } from "vue";
+import { computed, onMounted, ref, toRefs } from "vue";
 import type { ForecastItem } from "@/shared/api/weather/types";
 import { forecastListToChartData, forecastListToChartLabels } from "../../lib";
 import { generateId } from "@/shared/helpers";
@@ -51,11 +51,6 @@ const weatherChartData = computed(() => ({
     },
   },
 }));
-
-watch(list, () => {
-  drawChart(weatherChartData.value);
-});
-
 onMounted(() => {
   drawChart(weatherChartData.value);
 });
